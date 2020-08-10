@@ -1,9 +1,35 @@
 const { MongoClient } = require("mongodb");
 const uri =
   "mongodb+srv://bgaskwarrier:kaw009020@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority";
+const validate = require("jsonschema").validate;
+
+const catSchema = {
+  name: "string",
+  childCategories: {
+    type: "array",
+    items: { type: "string" },
+  },
+  required: ["name"],
+};
 
 exports.postData = async function (req, res) {
-  let entry = req.body;
+  const entry = req.body;
+
+  /*let validatePromise = new Promise(validateEntry(entry));
+  validatePromise
+    .then((result) => {
+      console.log("Success", result);
+    })
+    .catch((error) => {
+      console.log("Error", error);
+    });*/
+  try {
+    validate(entry, catSchema, { throwError: true });
+  } catch (error) {
+    res.status(401).end("Invalid body format: " + error.message);
+    return;
+  }
+
   console.log(entry);
   createCategoryEntry(entry).catch(console.error);
   res.sendStatus(200);
@@ -77,4 +103,21 @@ async function getCategoryEntry(name) {
     await client.close();
   }
   return entry;
+}
+
+async function validateEntry(entry, res) {
+  try {
+    validate(entry, catSchema, { throwError: true });
+    return "OK";
+  } catch (error) {
+    sendValidationError(
+      res,
+      "Invalid body format in category entry: " + error.message
+    );
+  }
+}
+
+function sendValidationError(res, message) {
+  console.log("error in validation");
+  return res.json({ success: false, message: message });
 }
