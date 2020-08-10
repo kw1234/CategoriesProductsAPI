@@ -9,7 +9,7 @@ const catSchema = {
     type: "array",
     items: { type: "string" },
   },
-  required: ["name"],
+  required: ["name", "childCategories"],
 };
 
 exports.postData = async function (req, res) {
@@ -36,14 +36,15 @@ exports.postData = async function (req, res) {
 };
 
 exports.getData = async function (req, res) {
-  let params = req.params;
-  console.log(params);
-  const name = params.name;
+  let body = req.body;
+  console.log(req.body);
+  const name = body.name;
 
-  const result = getCategoryEntry(name);
+  const result = getCategory(name, res);
+  //console.log(result);
 
   if (!result) res.error();
-  res.send(result);
+  //res.send(result);
 };
 
 async function createEntry(client, entry) {
@@ -63,7 +64,8 @@ async function getEntry(client, name) {
     .findOne({ name: name });
 
   if (result) {
-    console.log(result);
+    //console.log(result);
+    return result;
   } else {
     console.log(`No categories found with the name '${name}'`);
   }
@@ -85,7 +87,7 @@ async function createCategoryEntry(entry) {
   }
 }
 
-async function getCategoryEntry(name) {
+async function getCategory(name, res) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -96,7 +98,7 @@ async function getCategoryEntry(name) {
 
     entry = await getEntry(client, name);
     console.log(entry);
-    return entry;
+    res.send(entry);
   } catch (e) {
     console.error(e);
   } finally {
