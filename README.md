@@ -48,12 +48,12 @@ The Entities in this API are “Categories” and “Products”. This API can c
 }
 '''
 
-**add a category:** simply write an that contains the category fields
-**add a product:** write an object that contains the product fields
-**get all categories:** do a read of all the entries in the categories collection. To get a specific category, do a specific find based on categoryId or name
-**get all products under a category:** do a find amongst all products where a selected product will have the desired category name in their category list
-**update category details:** do a mongo update based on the categoryId or name
-**update product details:** do a mongo update based on the productID or name
+**add a category:** simply write an that contains the category fields<br>
+**add a product:** write an object that contains the product fields<br>
+**get all categories:** do a read of all the entries in the categories collection. To get a specific category, do a specific find based on categoryId or name<br>
+**get all products under a category:** do a find amongst all products where a selected product will have the desired category name in their category list<br>
+**update category details:** do a mongo update based on the categoryId or name<br>
+**update product details:** do a mongo update based on the productID or name<br>
 
 ## Using the API
 
