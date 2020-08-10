@@ -1,6 +1,6 @@
 # CategoriesProductsAPI
 
-The Entities in this API are “Categories” and “Products”.
+The Entities in this API are “Categories” and “Products”. This API can create, read, and update said entities.
 
 ### Categories
 - Category can have multiple child categories.
