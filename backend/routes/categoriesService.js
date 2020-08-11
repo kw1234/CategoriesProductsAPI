@@ -1,6 +1,9 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const { MongoClient } = require("mongodb");
-const uri =
-  "mongodb+srv://bgaskwarrier:kaw009020@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.username}:${process.env.password}@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority`;
 const validate = require("jsonschema").validate;
 
 const catSchema = {
@@ -35,12 +38,24 @@ exports.postData = async function (req, res) {
   res.sendStatus(200);
 };
 
-exports.getData = async function (req, res) {
+exports.getOne = async function (req, res) {
   let body = req.body;
   console.log(req.body);
   const name = body.name;
 
   const result = getCategory(name, res);
+  //console.log(result);
+
+  if (!result) res.error();
+  //res.send(result);
+};
+
+exports.getAll = async function (req, res) {
+  let body = req.body;
+  console.log(req.body);
+  const name = body.name;
+
+  const result = getAllCategories(res);
   //console.log(result);
 
   if (!result) res.error();
@@ -68,6 +83,17 @@ async function getEntry(client, name) {
     return result;
   } else {
     console.log(`No categories found with the name '${name}'`);
+  }
+}
+
+async function getAllEntries(client) {
+  const result = await client.db("CatsProds").collection("Categories").find({});
+
+  if (result) {
+    //console.log(result);
+    return result;
+  } else {
+    console.log(`No categories found`);
   }
 }
 
@@ -99,6 +125,26 @@ async function getCategory(name, res) {
     entry = await getEntry(client, name);
     console.log(entry);
     res.send(entry);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+  return entry;
+}
+
+async function getAllCategories(res) {
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  let entry = {};
+  try {
+    await client.connect();
+
+    entries = await getAllEntries(client);
+    console.log(entries);
+    res.send(entries);
   } catch (e) {
     console.error(e);
   } finally {

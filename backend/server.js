@@ -33,7 +33,8 @@ app.get("/", function (req, res) {
 });
 
 catApi.post("/postData", catService.postData);
-catApi.get("/getData", catService.getData);
+catApi.get("/getOne", catService.getOne);
+catApi.get("/getAll", catService.getAll);
 
 prodApi.post("/postData", prodService.postData);
 prodApi.get("/getData", prodService.getData);
