@@ -1,91 +1,70 @@
 const { MongoClient } = require("mongodb");
 const uri =
   "mongodb+srv://bgaskwarrier:kaw009020@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority";
+const validate = require("jsonschema").validate;
 
-let ma = "pa";
+const prodSchema = {
+  name: "string",
+  price: "double",
+  categories: {
+    type: "array",
+    items: { type: "string" },
+  },
+  required: ["name", "price", "categories"],
+};
 
-exports.saveData = async function (req, res) {
-  let rows = req.body;
-  console.log(rows);
-  for (i = 0; i < rows.length; i++) {
-    let dict = rows[i];
-    const percentage = parseInt(dict.percentage);
-    if (Number.isNaN(percentage)) {
-      console.log("invalid percentage input");
-      continue;
-    }
-    const [letterGrade, color] = getLetterGradeAndColor(percentage);
-    dict["letterGrade"] = letterGrade;
-    dict["gradeColor"] = color;
+exports.postData = async function (req, res) {
+  const entry = req.body;
+
+  try {
+    validate(entry, prodSchema, { throwError: true });
+  } catch (error) {
+    res.status(401).end("Invalid body format: " + error.message);
+    return;
   }
-  console.log(rows);
-  const entry = {
-    studentId: "student1",
-    weekId: "08/09/20",
-    plannerData: rows,
-  };
-  writePlannerEntry(entry).catch(console.error);
-  res.send(rows);
+
+  console.log(entry);
+  createProductEntry(entry).catch(console.error);
+  res.sendStatus(200);
 };
 
 exports.getData = async function (req, res) {
   let body = req.body;
-  console.log(body);
-  const studentId = body.studentId;
-  const weekId = body.weekId;
+  console.log(req.body);
+  const name = body.name;
 
-  const result = getPlannerEntry(studentId, weekId);
+  const result = getProduct(name, res);
+  //console.log(result);
 
   if (!result) res.error();
-  res.send(result);
+  //res.send(result);
 };
-
-function getLetterGradeAndColor(percentage) {
-  console.log(percentage);
-  if (percentage >= 92.5) return ["A", "green"];
-  if (percentage >= 89.5) return ["A-", "green"];
-  if (percentage >= 86.5) return ["B+", "lightgreen"];
-  if (percentage >= 82.5) return ["B", "lightgreen"];
-  if (percentage >= 79.5) return ["B-", "lightgreen"];
-  if (percentage >= 76.5) return ["C+", "yellow"];
-  if (percentage >= 72.5) return ["C", "yellow"];
-  if (percentage >= 69.5) return ["C-", "yellow"];
-  if (percentage >= 66.5) return ["D+", "orange"];
-  if (percentage >= 62.5) return ["D", "orange"];
-  if (percentage >= 59.5) return ["D-", "orange"];
-  return ["F", "red"];
-}
-
-async function listDatabases(client) {
-  const databasesList = await client.db().admin().listDatabases();
-
-  console.log("Databases:");
-  databasesList.databases.forEach((db) => console.log(` - ${db.name}`));
-}
 
 async function createEntry(client, entry) {
   const result = await client
-    .db("StudentSystem")
-    .collection("PlannerDocs")
+    .db("CatsProds")
+    .collection("Products")
     .insertOne(entry);
   console.log(
-    `New listing created with the following id: ${result.insertedId}`
+    `New product created with the following id: ${result.insertedId}`
   );
 }
 
-async function getEntry(client, studentId, weekId) {
-  const result = await client.findOne({ studentId: studentId, weekId: weekId });
+async function getEntry(client, name) {
+  const result = await client
+    .db("CatsProds")
+    .collection("Products")
+    .findOne({ name: name });
 
   if (result) {
-    console.log(result);
+    //console.log(result);
+    return result;
   } else {
-    console.log(
-      `No listings found with the studentId '${studentId}' and weekId '${weekId}'`
-    );
+    console.log(`No products found with the name '${name}'`);
   }
 }
 
-async function writePlannerEntry(entry) {
+async function createProductEntry(entry) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -101,7 +80,7 @@ async function writePlannerEntry(entry) {
   }
 }
 
-async function getPlannerEntry(studentId, weekId) {
+async function getProduct(name, res) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -110,13 +89,30 @@ async function getPlannerEntry(studentId, weekId) {
   try {
     await client.connect();
 
-    entry = await getEntry(client, studentId, weekId);
+    entry = await getEntry(client, name);
     console.log(entry);
-    return entry;
+    res.send(entry);
   } catch (e) {
     console.error(e);
   } finally {
     await client.close();
   }
   return entry;
+}
+
+async function validateEntry(entry, res) {
+  try {
+    validate(entry, catSchema, { throwError: true });
+    return "OK";
+  } catch (error) {
+    sendValidationError(
+      res,
+      "Invalid body format in product entry: " + error.message
+    );
+  }
+}
+
+function sendValidationError(res, message) {
+  console.log("error in validation");
+  return res.json({ success: false, message: message });
 }
