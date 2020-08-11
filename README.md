@@ -28,23 +28,23 @@ The Entities in this API are “Categories” and “Products”. This API can c
 - A possible index.html with embedded JavaScript could be present as an added bonus. Maybe even a more fleshed out UI (must first work on the backend side first before ever touching the frontend, though).
 
 - Schema of a Category:
-'''
+```
 {
   _id: String, //added on insertion by MongoDB
   name: String,
   childCategories: Array[]
 }
-'''
+```
 
 - Schema of a Product
-'''
+```
 {
   _id: String, //added on insertion by MongoDB
   name: String,
   price: Double,
   categories: Array[]
 }
-'''
+```
 
 **add a category:** simply write an that contains the category fields<br>
 **add a product:** write an object that contains the product fields<br>
