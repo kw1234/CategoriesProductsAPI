@@ -21,7 +21,7 @@ The Entities in this API are “Categories” and “Products”. This API can c
   4. Get all products by a category.
   5. Update product details (name,price,etc)
   
-## Implementation Plan
+# Implementation Plan
 - Node.js and Express will implement the backend server.
 - MongoDB Cloud will be used for the database.
 - To use the api, typical tools to query a REST API (curl, Postman, etc.) should be used
