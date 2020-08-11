@@ -30,8 +30,7 @@ The Entities in this API are “Categories” and “Products”. This API can c
 - Schema of a Category:
 '''
 {
-  _id: String,
-  categoryId: String,
+  _id: String, //added on insertion by MongoDB
   name: String,
   childCategories: Array[]
 }
@@ -40,10 +39,9 @@ The Entities in this API are “Categories” and “Products”. This API can c
 - Schema of a Product
 '''
 {
-  _id: String,
-  productId: String,
+  _id: String, //added on insertion by MongoDB
   name: String,
-  price: int,
+  price: Double,
   categories: Array[]
 }
 '''
@@ -55,14 +53,20 @@ The Entities in this API are “Categories” and “Products”. This API can c
 **update category details:** do a mongo update based on the categoryId or name<br>
 **update product details:** do a mongo update based on the productID or name<br>
 
+## Installation
+
+This app will be hosted so installation is not necessary.
+
+If installation is truly desired, this app works with MongoCloud as the database. The user will have to create a MongoCloud database with two tables, 1) Categories and 2) Products. The user will then have to insert/replace/hardcode their credentials and database/collection names into the categoryService.js and productService.js files. The app should work locally or on a hosted instance after that.
+
 ## Using the API
 
-### Blah (Being updated ... )
+- The API can be accessed at the route http://localhost:8080/categories or http://localhost:8080/products
+- To add an entry to either collection, query the route http://localhost:8080/categories/postData or http://localhost:8080/products/postData
+  - The data being sent in the POST request needs to match the schemas in the above section for the request to be valid
+- To get an entry from either collection, query the route http://localhost:8080/categories/getData or http://localhost:8080/products/getData
 
-Description: A description of your project follows. A good description is clear, short, and to the point. Describe the importance of your project, and what it does.
+The app should be hosted, so the endpoint in the above section will be changed as needed.
 
-Table of Contents: Optionally, include a table of contents in order to allow other people to quickly navigate especially long or detailed READMEs.
-
-Installation: Installation is the next section in an effective README. Tell other users how to install your project locally. Optionally, include a gif to make the process even more clear for other people.
-
-Usage: The next section is usage, in which you instruct other people on how to use your project after they’ve installed it. This would also be a good place to include screenshots of your project in action.
+# LAAALAALALALALAL REMOVE BELOWWWW
+# Usage: The next section is usage, in which you instruct other people on how to use your project after they’ve installed it. This would also be a good place to include screenshots of your project in action.
