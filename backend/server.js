@@ -35,7 +35,7 @@ app.get("/", function (req, res) {
 catApi.post("/postCategory", catService.postCategory);
 catApi.get("/getOne", catService.getOne);
 catApi.get("/getAll", catService.getAll);
-//catApi.put("/updateCategory", catService.updateCategory);
+catApi.put("/updateCategory", catService.updateCategory);
 
 prodApi.post("/postProduct", prodService.postData);
 prodApi.get("/getProduct", prodService.getData);

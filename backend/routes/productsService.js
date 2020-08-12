@@ -121,7 +121,7 @@ async function updateProductEntry(res, query) {
     await client.connect();
     const name = query.name;
     const update = query.update;
-    await doUpdate(res, client, name, update);
+    await updateEntry(res, client, name, update);
   } catch (e) {
     console.error(e);
   } finally {
@@ -184,16 +184,14 @@ async function getProductsFromCategory(res, client, category) {
   }
 }
 
-async function doUpdate(res, client, name, update) {
+async function updateEntry(res, client, name, update) {
   try {
     const result = await client
       .db("CatsProds")
       .collection("Products")
       .updateOne({ name: name }, { $set: update }, function (err, result) {
         assert.equal(err, null);
-        console.log(
-          `Updated the document with the field name equal to ${name}`
-        );
+        console.log(`Updated the product with the field name equal to ${name}`);
       });
 
     res.sendStatus(200);
