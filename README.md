@@ -88,21 +88,28 @@ The app should be hosted, so the endpoint in the above section will be changed a
 
 ### Curl Examples:
 ```
+// POST Category
 curl -X POST -H "Content-Type: application/json" -d '{"name": "School", "childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}]}' http://localhost:8080/categories/postCategory
 
+// GET Category by name
 curl -X GET -H "Content-Type: application/json" -d '{"name": "School"}' http://localhost:8080/categories/getOne
 
+// GET all Categories
 curl http://localhost:8080/categories/getAll
 
+// Update/PUT Category by name
 curl -X PUT -H "Content-Type: application/json" -d '{"name":"School", "update" : {"childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}, {"name": "Paper", "childCategories": []}]}}' http://localhost:8080/categories/updateCategory
 
 
-
+// POST Product
 curl -X POST -H "Content-Type: application/json" -d '{"name": "ScienceBook", "categories": ["Books", "Science"], "price": "12.2"}' http://localhost:8080/products/postProduct
 
+// GET Product by name
 curl -X GET -H "Content-Type: application/json" -d '{"name": "ScienceBook"}' http://localhost:8080/products/getProduct
 
+// GET Products by Category name
 curl -X GET -H "Content-Type: application/json" -d '{"name": "Books"}' http://localhost:8080/products/getProductsByCategory
 
+// Update/PUT Product
 curl -X PUT -H "Content-Type: application/json" -d '{"name":"ScienceBook", "update" :{"price":"15"}}' http://localhost:8080/products/updateProduct
 ```
