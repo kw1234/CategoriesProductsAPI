@@ -68,5 +68,5 @@ If installation is truly desired, this app works with MongoCloud as the database
 
 The app should be hosted, so the endpoint in the above section will be changed as needed.
 
-# LAAALAALALALALAL REMOVE BELOWWWW
-# Usage: The next section is usage, in which you instruct other people on how to use your project after they’ve installed it. This would also be a good place to include screenshots of your project in action.
+### Curl Examples:
+
