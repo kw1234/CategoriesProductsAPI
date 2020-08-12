@@ -54,10 +54,10 @@ The Entities in this API are “Categories” and “Products”. This API can c
 
 ## Possible Errors/Oversights
 1. This is the main one: when a product entry is created, it can have categories that aren't present in the actual Categories collection. This problem was in my mind since the beginning, but I thought to let it go. I let it go because I did not see it in the scope of the assignment. If this API was part of a live product, I would handle it as such:
-  - Upon creation of a Product entry, its "categories" field must be validated.
-  - The validation would entail checking if each category present in the "categories" list is present in a category or childCategory in the Categories collection.
-  - Whichever of the categories in this new Product entry that were not seen in the Categories collection would be added to the childCategories list under an always existing "Miscellaneous" entry in the Categories collection.
-  - This "Miscellaneous" entry would have to be constantly iterated through, and its childCategories added as categories accordingly to the Categories collection
+   - Upon creation of a Product entry, its "categories" field must be validated.
+   - The validation would entail checking if each category present in the "categories" list is present in a category or childCategory in the Categories collection.
+   - Whichever of the categories in this new Product entry that were not seen in the Categories collection would be added to the childCategories list under an always existing "Miscellaneous" entry in the Categories collection.
+   - This "Miscellaneous" entry would have to be constantly iterated through, and its childCategories added as categories accordingly to the Categories collection
 2. Tried to catch and handle all errors gracefully, but an oversight may have happened
 3. Did not write unit tests, but I did think that I probably should :)
 
@@ -87,4 +87,14 @@ If installation is truly desired, this app works with MongoCloud as the database
 The app should be hosted, so the endpoint in the above section will be changed as needed.
 
 ### Curl Examples:
+```
+catApi.post("/postCategory", catService.postCategory);
+catApi.get("/getOne", catService.getOne);
+catApi.get("/getAll", catService.getAll);
+catApi.put("/updateCategory", catService.updateCategory);
 
+prodApi.post("/postProduct", prodService.postData);
+prodApi.get("/getProduct", prodService.getData);
+prodApi.get("/getProductsByCategory", prodService.getCategoryProducts);
+prodApi.put("/updateProduct", prodService.updateProduct);
+```
