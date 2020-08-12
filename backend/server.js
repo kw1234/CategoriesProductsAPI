@@ -32,7 +32,7 @@ app.get("/", function (req, res) {
   res.send("hello");
 });
 
-catApi.post("/postCategory", catService.postData);
+catApi.post("/postCategory", catService.postCategory);
 catApi.get("/getOne", catService.getOne);
 catApi.get("/getAll", catService.getAll);
 //catApi.put("/updateCategory", catService.updateCategory);

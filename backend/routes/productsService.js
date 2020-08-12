@@ -29,7 +29,6 @@ exports.postData = async function (req, res) {
 
   console.log(entry);
   createProductEntry(res, entry).catch(console.error);
-  //res.sendStatus(200);
 };
 
 exports.getData = async function (req, res) {
@@ -38,10 +37,8 @@ exports.getData = async function (req, res) {
   const name = body.name;
 
   const result = getOneProduct(name, res);
-  //console.log(result);
 
   if (!result) res.error();
-  //res.send(result);
 };
 
 exports.getCategoryProducts = async function (req, res) {
@@ -50,10 +47,8 @@ exports.getCategoryProducts = async function (req, res) {
   console.log(name);
 
   const result = getProductsByCategory(res, name);
-  //console.log(result);
 
   if (!result) res.error();
-  //res.send(result);
 };
 
 exports.updateProduct = async function (req, res) {
@@ -61,7 +56,6 @@ exports.updateProduct = async function (req, res) {
 
   console.log(query);
   updateProductEntry(res, query).catch(console.error);
-  //res.sendStatus(200);
 };
 
 async function createProductEntry(res, entry) {
@@ -71,11 +65,6 @@ async function createProductEntry(res, entry) {
   });
   try {
     await client.connect();
-
-    client
-      .db("CatsProds")
-      .collection("Categories")
-      .createIndex({ name: 1 }, { unique: true });
 
     await createEntry(res, client, entry);
   } catch (e) {
@@ -159,15 +148,19 @@ async function createEntry(res, client, entry) {
 }
 
 async function getEntry(client, name) {
-  const result = await client
-    .db("CatsProds")
-    .collection("Products")
-    .findOne({ name: name });
+  try {
+    const result = await client
+      .db("CatsProds")
+      .collection("Products")
+      .findOne({ name: name });
 
-  if (result) {
-    return result;
-  } else {
-    console.log(`No products found with the name '${name}'`);
+    if (result) {
+      return result;
+    } else {
+      console.log(`No products found with the name '${name}'`);
+    }
+  } catch (error) {
+    console.log("Error in get product request: " + error.message);
   }
 }
 

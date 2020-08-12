@@ -15,17 +15,9 @@ const catSchema = {
   required: ["name", "childCategories"],
 };
 
-exports.postData = async function (req, res) {
+exports.postCategory = async function (req, res) {
   const entry = req.body;
 
-  /*let validatePromise = new Promise(validateEntry(entry));
-  validatePromise
-    .then((result) => {
-      console.log("Success", result);
-    })
-    .catch((error) => {
-      console.log("Error", error);
-    });*/
   try {
     validate(entry, catSchema, { throwError: true });
   } catch (error) {
@@ -44,63 +36,15 @@ exports.getOne = async function (req, res) {
   const name = body.name;
 
   const result = getCategory(name, res);
-  //console.log(result);
 
   if (!result) res.error();
-  //res.send(result);
 };
 
 exports.getAll = async function (req, res) {
   const result = getAllCategories(res);
-  //console.log(result);
 
   if (!result) res.error();
-  //res.send(result);
 };
-
-async function createEntry(client, entry) {
-  const result = await client
-    .db("CatsProds")
-    .collection("Categories")
-    .insertOne(entry);
-  console.log(
-    `New category created with the following id: ${result.insertedId}`
-  );
-}
-
-async function getEntry(client, name) {
-  const result = await client
-    .db("CatsProds")
-    .collection("Categories")
-    .findOne({ name: name });
-
-  if (result) {
-    //console.log(result);
-    return result;
-  } else {
-    console.log(`No categories found with the name '${name}'`);
-  }
-}
-
-async function getAllEntries(res, client) {
-  const result = await client
-    .db("CatsProds")
-    .collection("Categories")
-    .find({})
-    .toArray(function (err, docs) {
-      console.log("Found the following records");
-      console.log(docs);
-      res.send(docs);
-    });
-  //const result = "mangos";
-
-  if (result) {
-    //console.log(result);
-    return result;
-  }
-  console.log(`No categories found`);
-  return "bad";
-}
 
 async function createCategoryEntry(entry) {
   const client = new MongoClient(uri, {
@@ -158,19 +102,46 @@ async function getAllCategories(res) {
   //return entries;
 }
 
-async function validateEntry(entry, res) {
-  try {
-    validate(entry, catSchema, { throwError: true });
-    return "OK";
-  } catch (error) {
-    sendValidationError(
-      res,
-      "Invalid body format in category entry: " + error.message
-    );
+async function createEntry(client, entry) {
+  const result = await client
+    .db("CatsProds")
+    .collection("Categories")
+    .insertOne(entry);
+  console.log(
+    `New category created with the following id: ${result.insertedId}`
+  );
+}
+
+async function getEntry(client, name) {
+  const result = await client
+    .db("CatsProds")
+    .collection("Categories")
+    .findOne({ name: name });
+
+  if (result) {
+    //console.log(result);
+    return result;
+  } else {
+    console.log(`No categories found with the name '${name}'`);
   }
 }
 
-function sendValidationError(res, message) {
-  console.log("error in validation");
-  return res.json({ success: false, message: message });
+async function getAllEntries(res, client) {
+  const result = await client
+    .db("CatsProds")
+    .collection("Categories")
+    .find({})
+    .toArray(function (err, docs) {
+      console.log("Found the following records");
+      console.log(docs);
+      res.send(docs);
+    });
+  //const result = "mangos";
+
+  if (result) {
+    //console.log(result);
+    return result;
+  }
+  console.log(`No categories found`);
+  return "bad";
 }
