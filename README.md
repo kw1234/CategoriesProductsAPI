@@ -74,27 +74,35 @@ There just may be some errors with regards to the MongoCloud database side of th
 
 If installation is truly desired, this app works with MongoCloud as the database. The user will have to create a MongoCloud database with two tables, 1) Categories and 2) Products. The user will then have to insert/replace/hardcode their credentials and database/collection names into the categoryService.js and productService.js files. Alternatively, the user can use a .env file to keep their credentials safe. The app should work locally or on a hosted instance after that.
 
-## Using the API
+# Using the API
 
 - The API can be accessed at the route http://localhost:8080/categories or http://localhost:8080/products
-- To add an entry to either collection, query the route http://localhost:8080/categories/ or http://localhost:8080/products/
+- To add an entry to either collection, query the route http://localhost:8080/categories/postCategory or http://localhost:8080/products/postProduct
   - The data being sent in the POST request needs to match the schemas in the above section for the request to be valid
-- To get an entry from either collection, query the route http://localhost:8080/categories/ or http://localhost:8080/products/
-- To get all category entries,
-- To get all products under a certain category,
-- To update an entry by name,
+- To get an entry from either collection, query the route http://localhost:8080/categories/getOne or http://localhost:8080/products/getProduct
+- To get all category entries, query http://localhost:8080/categories/getAll
+- To get all products under a certain category, query http://localhost:8080/products/getProductsByCategory
+- To update an entry by name, use http://localhost:8080/categories/updateCategory or http://localhost:8080/products/updateProduct
 
 The app should be hosted, so the endpoint in the above section will be changed as needed.
 
 ### Curl Examples:
 ```
-catApi.post("/postCategory", catService.postCategory);
-catApi.get("/getOne", catService.getOne);
-catApi.get("/getAll", catService.getAll);
-catApi.put("/updateCategory", catService.updateCategory);
+curl -X POST -H "Content-Type: application/json" -d '{"name": "School", "childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}]}' http://localhost:8080/categories/postCategory
 
-prodApi.post("/postProduct", prodService.postData);
-prodApi.get("/getProduct", prodService.getData);
-prodApi.get("/getProductsByCategory", prodService.getCategoryProducts);
-prodApi.put("/updateProduct", prodService.updateProduct);
+curl -X GET -H "Content-Type: application/json" -d '{"name": "School"}' http://localhost:8080/categories/getOne
+
+curl http://localhost:8080/categories/getAll
+
+curl -X PUT -H "Content-Type: application/json" -d '{"name":"School", "update" : {"childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}, {"name": "Paper", "childCategories": []}]}}' http://localhost:8080/categories/updateCategory
+
+
+
+curl -X POST -H "Content-Type: application/json" -d '{"name": "ScienceBook", "categories": ["Books", "Science"], "price": "12.2"}' http://localhost:8080/products/postProduct
+
+curl -X GET -H "Content-Type: application/json" -d '{"name": "ScienceBook"}' http://localhost:8080/products/getProduct
+
+curl -X GET -H "Content-Type: application/json" -d '{"name": "Books"}' http://localhost:8080/products/getProductsByCategory
+
+curl -X PUT -H "Content-Type: application/json" -d '{"name":"ScienceBook", "update" :{"price":"15"}}' http://localhost:8080/products/updateProduct
 ```
