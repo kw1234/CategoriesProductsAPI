@@ -9,8 +9,7 @@ The Entities in this API are “Categories” and “Products”. This API can c
 
 ### Products
 - A Product can have multiple categories
-- A Product 
-- A product can have a multiple categories.
+- A Product has metadata such as price, etc.
 
 ### API Requirements
 - The Entities must get saved in MongoDb and be retrieved via POST and GET methods respectively.
