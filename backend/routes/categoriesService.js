@@ -7,6 +7,7 @@ const { MongoClient } = require("mongodb");
 const uri = `mongodb+srv://${process.env.username}:${process.env.password}@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority`;
 const validate = require("jsonschema").validate;
 
+// Schema to compare new POST entries to
 const catSchema = {
   name: "string",
   childCategories: {
