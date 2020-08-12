@@ -31,7 +31,7 @@ The Entities in this API are “Categories” and “Products”. This API can c
 {
   _id: String, //added on insertion by MongoDB
   name: String,
-  childCategories: Array[]
+  childCategories: Array[Category]
 }
 ```
 
@@ -41,7 +41,7 @@ The Entities in this API are “Categories” and “Products”. This API can c
   _id: String, //added on insertion by MongoDB
   name: String,
   price: Double,
-  categories: Array[]
+  categories: Array[String]
 }
 ```
 
