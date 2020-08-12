@@ -2,6 +2,7 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
+const assert = require("assert");
 const { MongoClient } = require("mongodb");
 const uri = `mongodb+srv://${process.env.username}:${process.env.password}@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority`;
 const validate = require("jsonschema").validate;
@@ -27,8 +28,8 @@ exports.postData = async function (req, res) {
   }
 
   console.log(entry);
-  createProductEntry(entry).catch(console.error);
-  res.sendStatus(200);
+  createProductEntry(res, entry).catch(console.error);
+  //res.sendStatus(200);
 };
 
 exports.getData = async function (req, res) {
@@ -36,7 +37,7 @@ exports.getData = async function (req, res) {
   console.log(req.body);
   const name = body.name;
 
-  const result = getProduct(name, res);
+  const result = getOneProduct(name, res);
   //console.log(result);
 
   if (!result) res.error();
@@ -45,55 +46,25 @@ exports.getData = async function (req, res) {
 
 exports.getCategoryProducts = async function (req, res) {
   let body = req.body;
-  console.log(req.body);
   const name = body.name;
+  console.log(name);
 
-  const result = getProductsByCategory(name, res);
+  const result = getProductsByCategory(res, name);
   //console.log(result);
 
   if (!result) res.error();
   //res.send(result);
 };
 
-async function createEntry(client, entry) {
-  const result = await client
-    .db("CatsProds")
-    .collection("Products")
-    .insertOne(entry);
-  console.log(
-    `New product created with the following id: ${result.insertedId}`
-  );
-}
+exports.updateProduct = async function (req, res) {
+  const query = req.body;
 
-async function getEntry(client, name) {
-  const result = await client
-    .db("CatsProds")
-    .collection("Products")
-    .findOne({ name: name });
+  console.log(query);
+  updateProductEntry(res, query).catch(console.error);
+  //res.sendStatus(200);
+};
 
-  if (result) {
-    //console.log(result);
-    return result;
-  } else {
-    console.log(`No products found with the name '${name}'`);
-  }
-}
-
-async function getProductsFromCategory(res, client, category) {
-  const result = await client
-    .db("CatsProds")
-    .collection("Products")
-    .find({ name: name });
-
-  if (result) {
-    //console.log(result);
-    return result;
-  } else {
-    console.log(`No products found with the name '${name}'`);
-  }
-}
-
-async function createProductEntry(entry) {
+async function createProductEntry(res, entry) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -101,7 +72,12 @@ async function createProductEntry(entry) {
   try {
     await client.connect();
 
-    await createEntry(client, entry);
+    client
+      .db("CatsProds")
+      .collection("Categories")
+      .createIndex({ name: 1 }, { unique: true });
+
+    await createEntry(res, client, entry);
   } catch (e) {
     console.error(e);
   } finally {
@@ -109,7 +85,7 @@ async function createProductEntry(entry) {
   }
 }
 
-async function getProduct(name, res) {
+async function getOneProduct(name, res) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -134,34 +110,103 @@ async function getProductsByCategory(res, category) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entry = {};
+  let entries = {};
   try {
     await client.connect();
 
-    entry = await getProductsFromCategory(res, client, name);
-    console.log(entry);
-    res.send(entry);
+    entries = await getProductsFromCategory(res, client, category);
   } catch (e) {
     console.error(e);
   } finally {
     await client.close();
   }
-  return entry;
 }
 
-async function validateEntry(entry, res) {
+async function updateProductEntry(res, query) {
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  let entries = {};
   try {
-    validate(entry, catSchema, { throwError: true });
-    return "OK";
-  } catch (error) {
-    sendValidationError(
-      res,
-      "Invalid body format in product entry: " + error.message
-    );
+    await client.connect();
+    const name = query.name;
+    const update = query.update;
+    await doUpdate(res, client, name, update);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
   }
 }
 
-function sendValidationError(res, message) {
-  console.log("error in validation");
-  return res.json({ success: false, message: message });
+async function createEntry(res, client, entry) {
+  try {
+    const result = await client
+      .db("CatsProds")
+      .collection("Products")
+      .insertOne(entry);
+
+    console.log(
+      `New product created with the following id: ${result.insertedId}`
+    );
+    res.sendStatus(200);
+  } catch (error) {
+    res
+      .status(400)
+      .end("Error in the create product request: " + error.message);
+  }
+}
+
+async function getEntry(client, name) {
+  const result = await client
+    .db("CatsProds")
+    .collection("Products")
+    .findOne({ name: name });
+
+  if (result) {
+    return result;
+  } else {
+    console.log(`No products found with the name '${name}'`);
+  }
+}
+
+async function getProductsFromCategory(res, client, category) {
+  try {
+    const result = await client
+      .db("CatsProds")
+      .collection("Products")
+      .find({ categories: category })
+      .toArray(function (err, docs) {
+        console.log("Found the following records");
+        console.log(docs);
+        res.send(docs);
+      });
+
+    if (!result) console.log(`No products found with the name '${category}'`);
+  } catch (error) {
+    res
+      .status(400)
+      .end("Error in the get products by category request: " + error.message);
+  }
+}
+
+async function doUpdate(res, client, name, update) {
+  try {
+    const result = await client
+      .db("CatsProds")
+      .collection("Products")
+      .updateOne({ name: name }, { $set: update }, function (err, result) {
+        assert.equal(err, null);
+        console.log(
+          `Updated the document with the field name equal to ${name}`
+        );
+      });
+
+    res.sendStatus(200);
+  } catch (error) {
+    res
+      .status(400)
+      .end("Error in the update product request: " + error.message);
+  }
 }

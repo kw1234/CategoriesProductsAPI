@@ -32,13 +32,15 @@ app.get("/", function (req, res) {
   res.send("hello");
 });
 
-catApi.post("/postData", catService.postData);
+catApi.post("/postCategory", catService.postData);
 catApi.get("/getOne", catService.getOne);
 catApi.get("/getAll", catService.getAll);
+//catApi.put("/updateCategory", catService.updateCategory);
 
-prodApi.post("/postData", prodService.postData);
-prodApi.get("/getData", prodService.getData);
+prodApi.post("/postProduct", prodService.postData);
+prodApi.get("/getProduct", prodService.getData);
 prodApi.get("/getProductsByCategory", prodService.getCategoryProducts);
+prodApi.put("/updateProduct", prodService.updateProduct);
 
 app.use("/categories", catApi);
 app.use("/products", prodApi);
