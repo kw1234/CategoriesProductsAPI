@@ -43,6 +43,18 @@ exports.getData = async function (req, res) {
   //res.send(result);
 };
 
+exports.getCategoryProducts = async function (req, res) {
+  let body = req.body;
+  console.log(req.body);
+  const name = body.name;
+
+  const result = getProductsByCategory(name, res);
+  //console.log(result);
+
+  if (!result) res.error();
+  //res.send(result);
+};
+
 async function createEntry(client, entry) {
   const result = await client
     .db("CatsProds")
@@ -58,6 +70,20 @@ async function getEntry(client, name) {
     .db("CatsProds")
     .collection("Products")
     .findOne({ name: name });
+
+  if (result) {
+    //console.log(result);
+    return result;
+  } else {
+    console.log(`No products found with the name '${name}'`);
+  }
+}
+
+async function getProductsFromCategory(res, client, category) {
+  const result = await client
+    .db("CatsProds")
+    .collection("Products")
+    .find({ name: name });
 
   if (result) {
     //console.log(result);
@@ -93,6 +119,26 @@ async function getProduct(name, res) {
     await client.connect();
 
     entry = await getEntry(client, name);
+    console.log(entry);
+    res.send(entry);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+  return entry;
+}
+
+async function getProductsByCategory(res, category) {
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  let entry = {};
+  try {
+    await client.connect();
+
+    entry = await getProductsFromCategory(res, client, name);
     console.log(entry);
     res.send(entry);
   } catch (e) {

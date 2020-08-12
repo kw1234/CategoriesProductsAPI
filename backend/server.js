@@ -38,6 +38,7 @@ catApi.get("/getAll", catService.getAll);
 
 prodApi.post("/postData", prodService.postData);
 prodApi.get("/getData", prodService.getData);
+prodApi.get("/getProductsByCategory", prodService.getCategoryProducts);
 
 app.use("/categories", catApi);
 app.use("/products", prodApi);

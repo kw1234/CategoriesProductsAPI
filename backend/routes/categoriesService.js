@@ -10,7 +10,7 @@ const catSchema = {
   name: "string",
   childCategories: {
     type: "array",
-    items: { type: "string" },
+    items: { type: "object" },
   },
   required: ["name", "childCategories"],
 };
@@ -51,10 +51,6 @@ exports.getOne = async function (req, res) {
 };
 
 exports.getAll = async function (req, res) {
-  let body = req.body;
-  console.log(req.body);
-  const name = body.name;
-
   const result = getAllCategories(res);
   //console.log(result);
 
@@ -86,15 +82,24 @@ async function getEntry(client, name) {
   }
 }
 
-async function getAllEntries(client) {
-  const result = await client.db("CatsProds").collection("Categories").find({});
+async function getAllEntries(res, client) {
+  const result = await client
+    .db("CatsProds")
+    .collection("Categories")
+    .find({})
+    .toArray(function (err, docs) {
+      console.log("Found the following records");
+      console.log(docs);
+      res.send(docs);
+    });
+  //const result = "mangos";
 
   if (result) {
     //console.log(result);
     return result;
-  } else {
-    console.log(`No categories found`);
   }
+  console.log(`No categories found`);
+  return "bad";
 }
 
 async function createCategoryEntry(entry) {
@@ -130,7 +135,7 @@ async function getCategory(name, res) {
   } finally {
     await client.close();
   }
-  return entry;
+  //return entry;
 }
 
 async function getAllCategories(res) {
@@ -138,19 +143,19 @@ async function getAllCategories(res) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entry = {};
+  let entries = {};
   try {
     await client.connect();
 
-    entries = await getAllEntries(client);
-    console.log(entries);
-    res.send(entries);
+    entries = await getAllEntries(res, client);
+    //console.log(entries);
+    //res.send(entries);
   } catch (e) {
     console.error(e);
   } finally {
     await client.close();
   }
-  return entry;
+  //return entries;
 }
 
 async function validateEntry(entry, res) {
