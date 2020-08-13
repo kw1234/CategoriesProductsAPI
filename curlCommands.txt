@@ -1,14 +1,14 @@
 // POST Category
-curl -X POST -H "Content-Type: application/json" -d '{"name": "School", "childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}]}' http://localhost:8080/categories/postCategory
+curl -X POST -H "Content-Type: application/json" -d '{"name": "Pool", "childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}]}' http://localhost:8080/categories/postCategory
 curl -X POST -H "Content-Type: application/json" -d '{"name": "Sports", "childCategories": [{"name": "Soccer",  "childCategories": []}, {"name": "Basketball", "childCategories": []}, {"Football": "Pencils", "childCategories": []}]}' https://catsprodsapi.uc.r.appspot.com/categories/postCategory
 
 // GET Category by name
-curl http://localhost:8080/categories/getOne?name=Misc
-curl https://catsprodsapi.uc.r.appspot.com/categories/getOne?name=School
+curl http://localhost:8080/categories/getCategory?name=Misc
+curl https://catsprodsapi.uc.r.appspot.com/categories/getCategory?name=School
 
 // GET all Categories
-curl http://localhost:8080/categories/getAll
-curl https://catsprodsapi.uc.r.appspot.com/categories/getAll
+curl http://localhost:8080/categories/getAllCategories
+curl https://catsprodsapi.uc.r.appspot.com/categories/getAllCategories
 
 // Update/PUT Category by name
 curl -X PUT -H "Content-Type: application/json" -d '{"name":"School", "update" : {"childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}, {"name": "Paper", "childCategories": []}]}}' http://localhost:8080/categories/updateCategory

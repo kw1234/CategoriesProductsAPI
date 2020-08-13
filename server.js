@@ -21,16 +21,16 @@ const catApi = express.Router();
 const prodApi = express.Router();
 
 app.get("/", function (req, res) {
-  res.send("hello");
+  res.send("Categories/Products API");
 });
 
 catApi.post("/postCategory", catService.postCategory);
-catApi.get("/getOne", catService.getOne);
-catApi.get("/getAll", catService.getAll);
+catApi.get("/getCategory", catService.getCategory);
+catApi.get("/getAllCategories", catService.getAllCategories);
 catApi.put("/updateCategory", catService.updateCategory);
 
-prodApi.post("/postProduct", prodService.postData);
-prodApi.get("/getProduct", prodService.getData);
+prodApi.post("/postProduct", prodService.postProduct);
+prodApi.get("/getProduct", prodService.getProduct);
 prodApi.get("/getProductsByCategory", prodService.getCategoryProducts);
 prodApi.put("/updateProduct", prodService.updateProduct);
 

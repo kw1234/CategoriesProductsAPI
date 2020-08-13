@@ -31,15 +31,15 @@ exports.postCategory = async function (req, res) {
   createCategoryEntry(res, entry).catch(console.error);
 };
 
-exports.getOne = async function (req, res) {
+exports.getCategory = async function (req, res) {
   const query = req.query;
   const name = query.name;
 
-  getCategory(name, res);
+  getOneCategory(name, res);
 };
 
-exports.getAll = async function (req, res) {
-  getAllCategories(res);
+exports.getAllCategories = async function (req, res) {
+  getMultipleCategories(res);
 };
 
 exports.updateCategory = async function (req, res) {
@@ -56,7 +56,6 @@ async function createCategoryEntry(res, entry) {
   });
   try {
     await client.connect();
-
     await createEntry(res, client, entry);
   } catch (e) {
     console.error(e);
@@ -65,44 +64,34 @@ async function createCategoryEntry(res, entry) {
   }
 }
 
-async function getCategory(name, res) {
+async function getOneCategory(name, res) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entry = {};
   try {
     await client.connect();
-
-    entry = await getEntry(client, name);
-    console.log(entry);
-    res.send(entry);
+    await getEntry(res, client, name);
   } catch (e) {
     console.error(e);
   } finally {
     await client.close();
   }
-  //return entry;
 }
 
-async function getAllCategories(res) {
+async function getMultipleCategories(res) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entries = {};
   try {
     await client.connect();
-
-    entries = await getAllEntries(res, client);
-    //console.log(entries);
-    //res.send(entries);
+    await getAllEntries(res, client);
   } catch (e) {
     console.error(e);
   } finally {
     await client.close();
   }
-  //return entries;
 }
 
 async function updateCategoryEntry(res, query) {
@@ -110,7 +99,6 @@ async function updateCategoryEntry(res, query) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entries = {};
   try {
     await client.connect();
     const name = query.name;
@@ -140,7 +128,7 @@ async function createEntry(res, client, entry) {
   }
 }
 
-async function getEntry(client, name) {
+async function getEntry(res, client, name) {
   try {
     const result = await client
       .db("CatsProds")
@@ -148,13 +136,13 @@ async function getEntry(client, name) {
       .findOne({ name: name });
 
     if (result) {
-      //console.log(result);
-      return result;
+      res.send(result);
     } else {
       console.log(`No categories found with the name '${name}'`);
+      res.send(result);
     }
   } catch (error) {
-    console.log("Error in the get single category request: " + error.message);
+    res.status(400).end("Error in the get category request: " + error.message);
   }
 }
 
@@ -165,7 +153,7 @@ async function getAllEntries(res, client) {
       .collection("Categories")
       .find({})
       .toArray(function (err, docs) {
-        console.log("Found the following records");
+        console.log("Found the following Categories");
         console.log(docs);
         res.send(docs);
       });

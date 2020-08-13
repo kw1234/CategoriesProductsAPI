@@ -18,7 +18,7 @@ const prodSchema = {
   required: ["name", "price", "categories"],
 };
 
-exports.postData = async function (req, res) {
+exports.postProduct = async function (req, res) {
   const entry = req.body;
 
   try {
@@ -32,22 +32,18 @@ exports.postData = async function (req, res) {
   createProductEntry(res, entry).catch(console.error);
 };
 
-exports.getData = async function (req, res) {
+exports.getProduct = async function (req, res) {
   const query = req.query;
   const name = query.name;
 
-  const result = getOneProduct(name, res);
-
-  if (!result) res.error();
+  getOneProduct(name, res);
 };
 
 exports.getCategoryProducts = async function (req, res) {
   const query = req.query;
   const name = query.name;
 
-  const result = getProductsByCategory(res, name);
-
-  if (!result) res.error();
+  getProductsByCategory(res, name);
 };
 
 exports.updateProduct = async function (req, res) {
@@ -64,7 +60,6 @@ async function createProductEntry(res, entry) {
   });
   try {
     await client.connect();
-
     await createEntry(res, client, entry);
   } catch (e) {
     console.error(e);
@@ -78,19 +73,14 @@ async function getOneProduct(name, res) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entry = {};
   try {
     await client.connect();
-
-    entry = await getEntry(client, name);
-    console.log(entry);
-    res.send(entry);
+    await getEntry(res, client, name);
   } catch (e) {
     console.error(e);
   } finally {
     await client.close();
   }
-  return entry;
 }
 
 async function getProductsByCategory(res, category) {
@@ -98,11 +88,9 @@ async function getProductsByCategory(res, category) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entries = {};
   try {
     await client.connect();
-
-    entries = await getProductsFromCategory(res, client, category);
+    await getProductsFromCategory(res, client, category);
   } catch (e) {
     console.error(e);
   } finally {
@@ -115,7 +103,6 @@ async function updateProductEntry(res, query) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  let entries = {};
   try {
     await client.connect();
     const name = query.name;
@@ -146,7 +133,7 @@ async function createEntry(res, client, entry) {
   }
 }
 
-async function getEntry(client, name) {
+async function getEntry(res, client, name) {
   try {
     const result = await client
       .db("CatsProds")
@@ -154,12 +141,13 @@ async function getEntry(client, name) {
       .findOne({ name: name });
 
     if (result) {
-      return result;
+      res.send(result);
     } else {
       console.log(`No products found with the name '${name}'`);
+      res.send(result);
     }
   } catch (error) {
-    console.log("Error in get product request: " + error.message);
+    res.status(400).end("Error in get product request: " + error.message);
   }
 }
 
