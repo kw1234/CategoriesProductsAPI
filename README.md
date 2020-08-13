@@ -76,40 +76,56 @@ If installation is truly desired, this app works with MongoCloud as the database
 
 # Using the API
 
-- The API can be accessed at the route http://localhost:8080/categories or http://localhost:8080/products
-- To add an entry to either collection, query the route http://localhost:8080/categories/postCategory or http://localhost:8080/products/postProduct
+- The API can be accessed at the route https://catsprodsapi.uc.r.appspot.com/categories or https://catsprodsapi.uc.r.appspot.com/products
+- To add an entry to either collection, query the route https://catsprodsapi.uc.r.appspot.com/categories/postCategory or https://catsprodsapi.uc.r.appspot.com/products/postProduct
   - The data being sent in the POST request needs to match the schemas in the above section for the request to be valid
-- To get an entry from either collection, query the route http://localhost:8080/categories/getOne or http://localhost:8080/products/getProduct
-- To get all category entries, query http://localhost:8080/categories/getAll
-- To get all products under a certain category, query http://localhost:8080/products/getProductsByCategory
-- To update an entry by name, use http://localhost:8080/categories/updateCategory or http://localhost:8080/products/updateProduct
+- To get an entry from either collection, query the route https://catsprodsapi.uc.r.appspot.com/categories/getCategory or https://catsprodsapi.uc.r.appspot.com/products/getProduct
+- To get all category entries, query https://catsprodsapi.uc.r.appspot.com/categories/getAllCategories
+- To get all products under a certain category, query https://catsprodsapi.uc.r.appspot.com/products/getProductsByCategory
+- To update an entry by name, use https://catsprodsapi.uc.r.appspot.com/categories/updateCategory or https://catsprodsapi.uc.r.appspot.com/products/updateProduct
 
-The app should be hosted, so the endpoint in the above section will be changed as needed.
 
 ### Curl Examples:
 ```
 // POST Category
-curl -X POST -H "Content-Type: application/json" -d '{"name": "School", "childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}]}' http://localhost:8080/categories/postCategory
+curl -X POST -H "Content-Type: application/json" -d '{"name": "Pool", "childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}]}' http://localhost:8080/categories/postCategory
+
+curl -X POST -H "Content-Type: application/json" -d '{"name": "Sports", "childCategories": [{"name": "Soccer",  "childCategories": []}, {"name": "Basketball", "childCategories": []}, {"Football": "Pencils", "childCategories": []}]}' https://catsprodsapi.uc.r.appspot.com/categories/postCategory
 
 // GET Category by name
-curl -X GET -H "Content-Type: application/json" -d '{"name": "School"}' http://localhost:8080/categories/getOne
+curl http://localhost:8080/categories/getCategory?name=Misc
+
+curl https://catsprodsapi.uc.r.appspot.com/categories/getCategory?name=School
 
 // GET all Categories
-curl http://localhost:8080/categories/getAll
+curl http://localhost:8080/categories/getAllCategories
+
+curl https://catsprodsapi.uc.r.appspot.com/categories/getAllCategories
 
 // Update/PUT Category by name
 curl -X PUT -H "Content-Type: application/json" -d '{"name":"School", "update" : {"childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}, {"name": "Paper", "childCategories": []}]}}' http://localhost:8080/categories/updateCategory
 
+curl -X PUT -H "Content-Type: application/json" -d '{"name":"School", "update" : {"childCategories": [{"name": "Books",  "childCategories": []}, {"name": "Bags", "childCategories": []}, {"name": "Pencils", "childCategories": []}, {"name": "Paper", "childCategories": []}]}}' https://catsprodsapi.uc.r.appspot.com/categories/updateCategory
+
 
 // POST Product
-curl -X POST -H "Content-Type: application/json" -d '{"name": "ScienceBook", "categories": ["Books", "Science"], "price": "12.2"}' http://localhost:8080/products/postProduct
+curl -X POST -H "Content-Type: application/json" -d '{"name": "WilsonBasketball", "categories": ["Sports", "Basketball"], "price": "20.5"}' http://localhost:8080/products/postProduct
+
+curl -X POST -H "Content-Type: application/json" -d '{"name": "BioBook", "categories": ["Books", "Science"], "price": "13.2"}' https://catsprodsapi.uc.r.appspot.com/products/postProduct
 
 // GET Product by name
-curl -X GET -H "Content-Type: application/json" -d '{"name": "ScienceBook"}' http://localhost:8080/products/getProduct
+curl http://localhost:8080/products/getProduct?name=BioBook
+
+curl https://catsprodsapi.uc.r.appspot.com/products/getProduct?name=ScienceBook
+
 
 // GET Products by Category name
-curl -X GET -H "Content-Type: application/json" -d '{"name": "Books"}' http://localhost:8080/products/getProductsByCategory
+curl http://localhost:8080/products/getProductsByCategory?name=Books
+
+curl https://catsprodsapi.uc.r.appspot.com/products/getProductsByCategory?name=Science
 
 // Update/PUT Product
 curl -X PUT -H "Content-Type: application/json" -d '{"name":"ScienceBook", "update" :{"price":"15"}}' http://localhost:8080/products/updateProduct
+
+curl -X PUT -H "Content-Type: application/json" -d '{"name":"BioBook", "update" :{"price":"30"}}' https://catsprodsapi.uc.r.appspot.com/products/updateProduct
 ```
