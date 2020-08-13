@@ -32,19 +32,14 @@ exports.postCategory = async function (req, res) {
 };
 
 exports.getOne = async function (req, res) {
-  let body = req.body;
-  console.log(req.body);
-  const name = body.name;
+  const query = req.query;
+  const name = query.name;
 
-  const result = getCategory(name, res);
-
-  if (!result) res.error();
+  getCategory(name, res);
 };
 
 exports.getAll = async function (req, res) {
-  const result = getAllCategories(res);
-
-  if (!result) res.error();
+  getAllCategories(res);
 };
 
 exports.updateCategory = async function (req, res) {

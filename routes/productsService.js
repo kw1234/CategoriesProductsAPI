@@ -33,9 +33,8 @@ exports.postData = async function (req, res) {
 };
 
 exports.getData = async function (req, res) {
-  let body = req.body;
-  console.log(req.body);
-  const name = body.name;
+  const query = req.query;
+  const name = query.name;
 
   const result = getOneProduct(name, res);
 
@@ -43,9 +42,8 @@ exports.getData = async function (req, res) {
 };
 
 exports.getCategoryProducts = async function (req, res) {
-  let body = req.body;
-  const name = body.name;
-  console.log(name);
+  const query = req.query;
+  const name = query.name;
 
   const result = getProductsByCategory(res, name);
 
