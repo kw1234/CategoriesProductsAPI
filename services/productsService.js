@@ -1,7 +1,4 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
+const assert = require("assert");
 const validate = require("jsonschema").validate;
 
 // Schema to compare new POST entries to

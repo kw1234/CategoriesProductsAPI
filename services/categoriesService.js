@@ -1,10 +1,4 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
 const assert = require("assert");
-const { MongoClient } = require("mongodb");
-const uri = `mongodb+srv://bgaskwarrier:kaw009020@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority`;
 const validate = require("jsonschema").validate;
 
 // Schema to compare new POST entries to
