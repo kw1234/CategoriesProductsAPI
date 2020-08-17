@@ -3,8 +3,12 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const { lstat } = require("fs");
 const app = express();
-const catService = require("./routes/categoriesService");
-const prodService = require("./routes/productsService");
+const catService = require("./services/categoriesService");
+const prodService = require("./services/productsService");
+
+const assert = require("assert");
+const { MongoClient } = require("mongodb");
+const uri = `mongodb+srv://bgaskwarrier:kaw009020@cluster0-1jamj.mongodb.net/StudentSystem?retryWrites=true&w=majority`;
 
 app.use(bodyParser.json());
 
@@ -15,6 +19,20 @@ app.use((req, res, next) => {
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   next();
+});
+
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+client.connect(function (err, database) {
+  if (err) throw err;
+
+  app.client = database;
+
+  app.listen(8080);
+  console.log("Listening on port 8080");
 });
 
 const catApi = express.Router();
@@ -36,5 +54,3 @@ prodApi.put("/updateProduct", prodService.updateProduct);
 
 app.use("/categories", catApi);
 app.use("/products", prodApi);
-
-app.listen(8080);

@@ -16,7 +16,7 @@ curl -X PUT -H "Content-Type: application/json" -d '{"name":"School", "update" :
 
 
 // POST Product
-curl -X POST -H "Content-Type: application/json" -d '{"name": "ScienceBook", "categories": ["Books", "Science"], "price": "12.2"}' http://localhost:8080/products/postProduct
+curl -X POST -H "Content-Type: application/json" -d '{"name": "WilsonBasketball", "categories": ["Sports", "Basketball"], "price": "20.5"}' http://localhost:8080/products/postProduct
 curl -X POST -H "Content-Type: application/json" -d '{"name": "BioBook", "categories": ["Books", "Science"], "price": "13.2"}' https://catsprodsapi.uc.r.appspot.com/products/postProduct
 
 // GET Product by name
